@@ -7,10 +7,9 @@
      3. A radar chart comparing the week's four largest asteroids
    ========================================================================== */
 
-// NASA's shared DEMO_KEY works out of the box, but it is rate-limited to
-// 30 requests/hour and 50/day per IP address. Swap in a free personal key
-// from https://api.nasa.gov/ if you hit that limit.
-const API_KEY = "DEMO_KEY";
+// Personal API Key with 1000 requests/hour which is more than enough for my project, this personal 
+// key has been generted by signing up the NASA API and they will email you the API key
+const API_KEY = "fhJPI9SVSkRgDaAZyoDBGKhnTYm2CyM7c4cCk8TE";
 
 // DOM references, grabbed once up front.
 const statusEl = document.getElementById("statusMessage");
