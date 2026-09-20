@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Near-Earth Object Watch — NASA NeoWs Visualization</title>
+
+  <!-- Google Fonts: Fraunces for the observation-log headline feel, IBM Plex for data-driven body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Decorative space background: static starfield + falling-star streaks.
+       aria-hidden and pointer-events:none so it never interferes with
+       screen readers or clicks on real content. -->
+  <div class="star-field" aria-hidden="true">
+    <span class="shooting-star star-1"></span>
+    <span class="shooting-star star-2"></span>
+    <span class="shooting-star star-3"></span>
+    <span class="shooting-star star-4"></span>
+    <span class="shooting-star star-5"></span>
+  </div>
+
+  <div class="dashboard">
+
+    <header class="dash-header">
+      <div class="title-block">
+        <h1>Near-Earth Object Watch (NeoW)</h1>
+        <p class="kicker">NASA NeoWs &middot; live 7-day feed, charted with Chart.js</p>
+      </div>
+
+      <!-- Hero stats: filled in by script.js once the API response arrives -->
+      <div class="hero-stats" id="heroStats" aria-live="polite">
+        <div class="stat-card">
+          <span class="stat-value" id="statTotal">—</span>
+          <span class="stat-label">tracked this week</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statHazardous">—</span>
+          <span class="stat-label">potentially hazardous</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statClosest">—</span>
+          <span class="stat-label">closest approach (LD)</span>
+        </div>
+      </div>
+    </header>
+
+    <p id="statusMessage" class="status" role="status"></p>
+
+    <main>
+      <section class="panel panel-bar">
+        <h2>Daily asteroid traffic</h2>
+        <p class="panel-note">Hazardous vs. non-hazardous counts, per day.</p>
+        <div class="chart-wrap">
+          <canvas id="dailyCountChart" role="img" aria-label="Stacked bar chart of daily asteroid counts, split by hazard status"></canvas>
+        </div>
+      </section>
+
+      <section class="panel panel-line">
+        <h2>How close did they come?</h2>
+        <p class="panel-note">Nearest pass per day, in lunar distances (1 LD &asymp; 384,400&nbsp;km).</p>
+        <div class="chart-wrap">
+          <canvas id="closestApproachChart" role="img" aria-label="Line chart of the closest asteroid approach distance per day"></canvas>
+        </div>
+      </section>
+
+      <section class="panel panel-radar">
+        <h2>This week's biggest visitors</h2>
+        <p class="panel-note">Top 4 by size, scored 0&ndash;100 against each other on size, speed, and proximity.</p>
+        <div class="chart-wrap">
+          <canvas id="asteroidProfileChart" role="img" aria-label="Radar chart comparing size, speed, proximity, and hazard flag for the week's four largest asteroids"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Data: <a href="https://api.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Open APIs</a>
+        &mdash; Near Earth Object Web Service (NeoWs), NASA JPL Center for Near-Earth Object Studies.
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- Chart.js from cdnjs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

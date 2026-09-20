@@ -1,0 +1,312 @@
+/* ==========================================================================
+   Near-Earth Object Watch — stylesheet
+   Design concept: a night-sky observation log. Dark plum-navy background,
+   warm gold accent for highlights, teal/rust for the safe/hazardous data
+   split. Fraunces for headline personality, IBM Plex for readouts.
+   ========================================================================== */
+
+:root {
+  /* --- Color tokens --- */
+  --color-bg: #1b1a2e;          /* deep plum-navy, not pure black */
+  --color-bg-alt: #242340;      /* slightly lighter panels */
+  --color-text: #ede9e3;        /* warm off-white */
+  --color-text-muted: #b3aec4;  /* muted lavender-grey */
+  --color-accent-gold: #e8a33d; /* highlight / closest-approach line */
+  --color-hazard: #e85d4e;      /* potentially hazardous asteroids */
+  --color-safe: #4fc3b0;        /* non-hazardous asteroids */
+  --color-border: #34324f;
+
+  /* --- Type tokens --- */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+
+  /* --- Layout tokens --- */
+  --dashboard-max-width: 1440px;
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden; /* this is a single-screen dashboard: no page scrolling */
+}
+
+body {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.55;
+  position: relative;
+
+  /* Starfield: two tiled layers of small radial-gradient dots at different
+     sizes/spacing, so it reads as scattered stars rather than an obvious
+     repeating grid. Pure CSS — no images or JS needed. */
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(1.5px 1.5px at 20px 30px, rgba(237, 233, 227, 0.9), transparent),
+    radial-gradient(1px 1px at 110px 80px, rgba(237, 233, 227, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 160px 20px, rgba(232, 163, 61, 0.7), transparent),
+    radial-gradient(1px 1px at 70px 130px, rgba(237, 233, 227, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 190px 150px, rgba(237, 233, 227, 0.8), transparent),
+    radial-gradient(1px 1px at 40px 170px, rgba(237, 233, 227, 0.4), transparent),
+    radial-gradient(1px 1px at 240px 60px, rgba(237, 233, 227, 0.6), transparent);
+  background-repeat: repeat;
+  background-size: 260px 220px;
+  background-attachment: fixed;
+}
+
+/* --- Falling stars ---
+   A fixed, full-viewport layer sitting behind all real content
+   (negative z-index), holding a handful of streaks that fall on loop. */
+
+.star-field {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.shooting-star {
+  position: absolute;
+  top: -10%;
+  width: 2px;
+  height: 90px;
+  background: linear-gradient(180deg, rgba(237, 233, 227, 0.95), rgba(237, 233, 227, 0));
+  border-radius: 999px;
+  opacity: 0;
+  transform: rotate(18deg);
+  animation: fall 7s linear infinite;
+}
+
+.star-1 { left: 12%; animation-delay: 0s; }
+.star-2 { left: 34%; animation-delay: 2.2s; height: 60px; }
+.star-3 { left: 58%; animation-delay: 4.8s; }
+.star-4 { left: 76%; animation-delay: 1.4s; height: 70px; }
+.star-5 { left: 90%; animation-delay: 5.6s; height: 55px; }
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(18deg);
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  30% {
+    transform: translateY(70vh) rotate(18deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(70vh) rotate(18deg);
+    opacity: 0;
+  }
+}
+
+a {
+  color: var(--color-accent-gold);
+}
+
+/* --- Dashboard shell: fills the viewport exactly, no scrolling --- */
+
+.dashboard {
+  max-width: var(--dashboard-max-width);
+  height: 100vh;
+  margin: 0 auto;
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* --- Header: title on the left, KPI stats on the right, one slim row --- */
+
+.dash-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.title-block h1 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  margin: 0 0 0.2rem;
+  line-height: 1.1;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-accent-gold);
+  margin: 0;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.stat-card {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 9rem;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  color: var(--color-accent-gold);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* --- Status message (loading / error) --- */
+
+.status {
+  flex-shrink: 0;
+  min-height: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.status.is-error {
+  color: var(--color-hazard);
+}
+
+/* --- Chart panels: fill all remaining vertical space, 3 across --- */
+
+main {
+  flex: 1;
+  min-height: 0; /* required for flex children to shrink instead of overflowing */
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+}
+
+.panel-bar {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.panel-line {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.panel-radar {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.panel {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panel h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 0 0 0.25rem;
+  flex-shrink: 0;
+}
+
+.panel-note {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  margin: 0 0 0.6rem;
+  flex-shrink: 0;
+}
+
+.chart-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+/* --- Footer: one thin line --- */
+
+footer {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+footer p {
+  margin: 0;
+}
+
+/* --- Responsive: below this, allow scrolling rather than crush the charts --- */
+
+@media (max-width: 900px), (max-height: 600px) {
+  html, body {
+    overflow: auto;
+  }
+  .dashboard {
+    height: auto;
+    min-height: 100vh;
+  }
+  .dash-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  main {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+  .panel-bar,
+  .panel-line,
+  .panel-radar {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .chart-wrap {
+    height: 280px;
+  }
+}
+
+/* --- Accessibility --- */
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent-gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .star-field {
+    display: none;
+  }
+}
